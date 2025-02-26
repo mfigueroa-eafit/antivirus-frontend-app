@@ -16,7 +16,7 @@ Este repositorio contiene el código fuente de la página web de la Fundación A
    ```
 2. Ingresa al directorio del proyecto:
    ```sh
-   cd fundacion-antivirus
+   cd antivirus-frontend-app
    ```
 3. Instala las dependencias:
    ```sh
