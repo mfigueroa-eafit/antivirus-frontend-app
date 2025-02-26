@@ -1,40 +1,37 @@
-# Welcome to Remix!
+# Fundación Antivirus para la Deserción
 
-- 📖 [Remix docs](https://remix.run/docs)
+Este repositorio contiene el código fuente de la página web de la Fundación Antivirus para la Deserción, desarrollada con Remix, TypeScript y Tailwind CSS. Implementa GitHub Actions para el despliegue en Azure.
 
-## Development
+## Tecnologías utilizadas
+- Remix
+- TypeScript
+- Tailwind CSS
+- GitHub Actions
+- Azure
 
-Run the dev server:
+## Instalación y ejecución
+1. Clona el repositorio:
+   ```sh
+   git clone https://github.com/mfigueroa-eafit/antivirus-frontend-app.git
+   ```
+2. Ingresa al directorio del proyecto:
+   ```sh
+   cd fundacion-antivirus
+   ```
+3. Instala las dependencias:
+   ```sh
+   npm install
+   ```
+4. Inicia el servidor de desarrollo:
+   ```sh
+   npm run dev
+   ```
 
-```shellscript
-npm run dev
-```
+## Despliegue
+El proyecto usa GitHub Actions para desplegar automáticamente en Azure. Cada cambio en la rama principal activa el flujo de despliegue.
 
-## Deployment
+## Contribución
+Si deseas contribuir, por favor abre un issue o envía un pull request con tus mejoras.
 
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+## Contacto
+Para más información, visita nuestro sitio web o contáctanos en: contactenos@fundacionantivirusparaladesercion.org
