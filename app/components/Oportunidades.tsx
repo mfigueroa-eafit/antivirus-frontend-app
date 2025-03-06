@@ -21,7 +21,7 @@ export default function Oportunidades() {
           </div>
           {/* Tarjeta 3 */}
           <div className="bg-white shadow-md rounded-lg p-6">
-            <img src="/assets/images/image.png" alt="Comfama" className="mx-auto" />
+            <img src="/assets/images/comfama-logo.png" alt="Comfama" className="mx-auto" />
             <h3 className="text-lg font-bold mt-4">Comfama</h3>
             <p className="text-gray-600">
               Accede a programas educativos y recreativos con Comfama.

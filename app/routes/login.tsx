@@ -1,8 +1,40 @@
-import { Form } from "@remix-run/react";
+import { Form, useActionData, useFetcher } from "@remix-run/react";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
+import { json, redirect} from "@remix-run/node";
+import { tokenCookie } from "~/utils/cookies"; 
+
+
+export const action = async ({ request }) => {
+  const formData = await request.formData();
+  const correo = formData.get("correo");
+  const password = formData.get("password");
+
+  const response = await fetch("http://localhost:5050/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ correo, password }),
+  });
+
+  if (!response.ok) {
+    return json({ error: "Credenciales incorrectas" }, { status: 401 });
+  }
+
+  const data = await response.json();
+  let token = data.token.replace(/['"]+/g, ""); 
+  const headers = new Headers();
+  headers.append("Set-Cookie", await tokenCookie.serialize(token));
+
+  return redirect("/novedades", { headers });
+};
+
+
 
 export default function Login() {
+  const fetcher = useFetcher(); 
+  const actionData = useActionData();
+
+
   return (
     <>
       {/* Barra de navegación */}
@@ -41,12 +73,16 @@ export default function Login() {
               </button>
             </div>
 
-            <Form method="post" className="mt-6">
+            {actionData?.error && (
+            <p className="text-red-500 text-center mt-2">{actionData.error}</p>
+          )}
+
+            <fetcher.Form method="post" className="mt-6">
               <label className="block text-gray-700">Email</label>
               <input
                 type="email"
-                name="email"
-                className="w-full p-2 border rounded-md bg-white"
+                name="correo"
+                className="w-full p-2 border rounded-md"
                 placeholder="example@gmail.com"
               />
 
@@ -54,7 +90,7 @@ export default function Login() {
               <input
                 type="password"
                 name="password"
-                className="w-full p-2 border rounded-md bg-white"
+                className="w-full p-2 border rounded-md"
                 placeholder="********"
               />
 
@@ -71,7 +107,7 @@ export default function Login() {
               >
                 Login
               </button>
-            </Form>
+            </fetcher.Form>
 
             <p className="mt-4 text-center text-gray-700">
               ¿No tienes una cuenta?{" "}
