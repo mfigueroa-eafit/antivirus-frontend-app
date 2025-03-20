@@ -3,11 +3,22 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
+  ScrollRestoration, 
+  useLoaderData,
+  LiveReload
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
-
 import "./tailwind.css";
+import { tokenCookie } from "~/utils/cookies";
+import { json } from "@remix-run/node";
+import Navbar from "~/components/Navbar";
+import Footer from "~/components/Footer";
+
+export const loader = async ({ request }) => {
+  const cookieHeader = request.headers.get("Cookie");
+  const token = await tokenCookie.parse(cookieHeader);
+  return json({ isAuthenticated: !!token }); 
+};
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -41,5 +52,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { isAuthenticated } = useLoaderData() || { isAuthenticated: false }; 
+  return (
+    <html lang="es">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <Navbar isAuthenticated={isAuthenticated} />
+        <Outlet />
+        <Footer />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
 }

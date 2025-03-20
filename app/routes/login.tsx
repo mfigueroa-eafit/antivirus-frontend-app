@@ -1,6 +1,4 @@
 import { Form, useActionData, useFetcher } from "@remix-run/react";
-import Navbar from "~/components/Navbar";
-import Footer from "~/components/Footer";
 import { json, redirect} from "@remix-run/node";
 import { tokenCookie } from "~/utils/cookies"; 
 
@@ -36,9 +34,6 @@ export default function Login() {
 
 
   return (
-    <>
-      {/* Barra de navegación */}
-      <Navbar />
 
       <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-4xl flex">
@@ -118,9 +113,5 @@ export default function Login() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
-    </>
   );
 }
