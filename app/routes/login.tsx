@@ -1,6 +1,7 @@
 import { Form, useActionData, useFetcher } from "@remix-run/react";
 import { json, redirect} from "@remix-run/node";
-import { tokenCookie } from "~/utils/cookies"; 
+import { tokenCookie } from "~/utils/cookies";
+import { login } from "~/services/authService";  
 
 
 export const action = async ({ request }) => {
@@ -8,25 +9,19 @@ export const action = async ({ request }) => {
   const correo = formData.get("correo");
   const password = formData.get("password");
 
-  const response = await fetch("http://localhost:5050/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ correo, password }),
-  });
+  try {
+    const data = await login(correo, password);
+    const token = data.token.replace(/['"]+/g, "");
 
-  if (!response.ok) {
-    return json({ error: "Credenciales incorrectas" }, { status: 401 });
+    return redirect("/novedades", {
+      headers: {
+        "Set-Cookie": await tokenCookie.serialize(token),
+      },
+    });
+  } catch (error) {
+    return json({ error: error.message }, { status: 401 });
   }
-
-  const data = await response.json();
-  let token = data.token.replace(/['"]+/g, ""); 
-  const headers = new Headers();
-  headers.append("Set-Cookie", await tokenCookie.serialize(token));
-
-  return redirect("/novedades", { headers });
 };
-
-
 
 export default function Login() {
   const fetcher = useFetcher(); 

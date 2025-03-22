@@ -2,6 +2,7 @@ import React from "react";
 import { json, useLoaderData } from "@remix-run/react";
 import { tokenCookie } from "~/utils/cookies";
 import Carousel from "~/components/Carousel";
+import { getOportunidades, getLogos } from "~/services/oportunidadesService";
 
 export const loader = async ({ request }) => {
   const token = await tokenCookie.parse(request.headers.get("Cookie"));
@@ -10,25 +11,10 @@ export const loader = async ({ request }) => {
     return json({ isAuthenticated: false, oportunidades: [] });
   }
 
-  try {
-    const response = await fetch("http://localhost:5050/api/oportunidades", {
-      method: "GET",
-      headers: {
-        accept: "text/plain",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const oportunidades = await getOportunidades(token);
+  const logos = getLogos(oportunidades);
 
-    if (!response.ok) {
-      throw new Error("Error al obtener las novedades");
-    }
-
-    const data = await response.json();
-    return json({ isAuthenticated: true, oportunidades: data });
-  } catch (error) {
-    console.error("Error fetching novedades:", error);
-    return json({ isAuthenticated: true, oportunidades: [] });
-  }
+  return json({ isAuthenticated: true, oportunidades, logos });
 };
 
 const Novedades = () => {

@@ -9,15 +9,14 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import "./tailwind.css";
-import { tokenCookie } from "~/utils/cookies";
 import { json } from "@remix-run/node";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
+import { checkAuth } from "~/services/authService"; 
 
 export const loader = async ({ request }) => {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = await tokenCookie.parse(cookieHeader);
-  return json({ isAuthenticated: !!token }); 
+  const isAuthenticated = await checkAuth(request);
+  return json({ isAuthenticated });
 };
 
 export const links: LinksFunction = () => [
