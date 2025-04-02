@@ -13,7 +13,6 @@ export const loader = async ({ request }) => {
 
   const oportunidades = await getOportunidades(token);
   const logos = getLogos(oportunidades);
-
   return json({ isAuthenticated: true, oportunidades, logos });
 };
 

@@ -1,3 +1,5 @@
+import {BACKEND_SERVER} from "~/utils/constants"
+
 /**
  * Obtiene la lista de oportunidades desde la API.
  * @param {string} token - Token de autenticación del usuario.
@@ -5,7 +7,7 @@
  */
 export async function getOportunidades(token) {
     try {
-      const response = await fetch("http://localhost:5050/api/oportunidades", {
+      const response = await fetch(`${BACKEND_SERVER}/api/oportunidades`, {
         method: "GET",
         headers: {
           accept: "text/plain",

@@ -1,7 +1,9 @@
 import { Form, useActionData, useFetcher } from "@remix-run/react";
 import { json, redirect} from "@remix-run/node";
 import { tokenCookie } from "~/utils/cookies";
-import { login } from "~/services/authService";  
+import { login } from "~/services/authService";
+import {jwtDecode} from "jwt-decode";
+import { ROLE_ADMIN, ROUTES } from "~/utils/constants"; 
 
 
 export const action = async ({ request }) => {
@@ -9,24 +11,39 @@ export const action = async ({ request }) => {
   const correo = formData.get("correo");
   const password = formData.get("password");
 
+
   try {
     const data = await login(correo, password);
     const token = data.token.replace(/['"]+/g, "");
 
-    return redirect("/novedades", {
-      headers: {
-        "Set-Cookie": await tokenCookie.serialize(token),
-      },
-    });
-  } catch (error) {
-    return json({ error: error.message }, { status: 401 });
-  }
-};
+    const decodedToken = jwtDecode(token);
+
+    // Extraer el rol del token decodificado
+    const rol = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+    let redirectPage = "/novedades"; // Página por defecto
+
+    // Establecer la página de redirección según el rol
+    if (rol === ROLE_ADMIN) {
+      redirectPage = ROUTES.ADMIN; // Redirigir a la página de administración
+    } else  {
+      redirectPage = ROUTES.DEFAULT; // Redirigir a la página por defecto
+    }
+
+    return redirect(redirectPage, {
+          headers: {
+            "Set-Cookie": await tokenCookie.serialize(token),
+          },
+        });
+      } catch (error) {
+        return json({ error: error.message }, { status: 401 });
+      }
+    };
+
 
 export default function Login() {
   const fetcher = useFetcher(); 
   const actionData = useActionData();
-
 
   return (
 
@@ -72,7 +89,7 @@ export default function Login() {
               <input
                 type="email"
                 name="correo"
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md  bg-gray-50 text-black"
                 placeholder="example@gmail.com"
               />
 
@@ -80,13 +97,13 @@ export default function Login() {
               <input
                 type="password"
                 name="password"
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md  bg-gray-50 text-black"
                 placeholder="********"
               />
 
               <div className="mt-4 flex items-center justify-between">
                 <label className="flex items-center text-black ">
-                  <input type="checkbox" className="mr-2  bg-blend-color" /> Recordarme
+                  <input type="checkbox" className="mr-2  bg-blend-color  bg-gray-50 text-black" /> Recordarme
                 </label>
                 <a href="#" className="text-yellow-500">Olvidé mi contraseña</a>
               </div>

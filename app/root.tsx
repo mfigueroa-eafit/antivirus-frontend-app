@@ -4,8 +4,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration, 
-  useLoaderData,
-  LiveReload
+  useLoaderData
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import "./tailwind.css";
@@ -15,8 +14,18 @@ import Footer from "~/components/Footer";
 import { checkAuth } from "~/services/authService"; 
 
 export const loader = async ({ request }) => {
-  const isAuthenticated = await checkAuth(request);
-  return json({ isAuthenticated });
+  // Verificar si el usuario está autenticado y obtener el rol
+  const authData = await checkAuth(request);
+
+  // Si no hay token, no hay autenticación
+  if (!authData) {
+    return json({ isAuthenticated: false });
+  }
+
+  // Si hay token, devolver la autenticación y el rol
+  const { rol } = authData;
+  const { nombre } = authData;
+  return json({ isAuthenticated: true, rol, nombre });
 };
 
 export const links: LinksFunction = () => [
@@ -51,21 +60,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { isAuthenticated } = useLoaderData() || { isAuthenticated: false }; 
+  const { isAuthenticated, rol, nombre } = useLoaderData() || { isAuthenticated: false, rol: null, nombre: null };
+ 
   return (
-    <html lang="es">
-      <head>
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <Navbar isAuthenticated={isAuthenticated} />
-        <Outlet />
-        <Footer />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <>
+      <Navbar isAuthenticated={isAuthenticated} rol={rol} nombre={nombre} suppressHydrationWarning/>
+      <Outlet />
+      <Footer />
+      <ScrollRestoration />
+      <Scripts />
+    </>
   );
 }
